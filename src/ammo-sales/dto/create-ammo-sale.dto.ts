@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsUUID, Min, MinLength } from 'class-validator';
+import { IsString, IsInt, IsUUID, IsBoolean, IsOptional, Min, MinLength } from 'class-validator';
 
 export class CreateAmmoSaleDto {
   @IsInt()
@@ -15,4 +15,12 @@ export class CreateAmmoSaleDto {
 
   @IsUUID()
   supplierId: string;
+
+  @IsOptional()
+  @IsUUID()
+  customerId?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isInternalConsumption?: boolean;
 }

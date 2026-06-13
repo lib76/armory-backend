@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Supplier } from './supplier.entity';
 import type { CreateSupplierDto } from './dto/create-supplier.dto';
+import type { UpdateSupplierDto } from './dto/update-supplier.dto';
 
 @Injectable()
 export class SuppliersService {
@@ -17,6 +18,13 @@ export class SuppliersService {
 
   create(dto: CreateSupplierDto): Promise<Supplier> {
     return this.repo.save(this.repo.create(dto));
+  }
+
+  async update(id: string, dto: UpdateSupplierDto): Promise<Supplier> {
+    const supplier = await this.repo.findOne({ where: { id } });
+    if (!supplier) throw new NotFoundException('Proveedor no encontrado');
+    Object.assign(supplier, dto);
+    return this.repo.save(supplier);
   }
 
   async remove(id: string): Promise<void> {

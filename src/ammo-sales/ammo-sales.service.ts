@@ -18,6 +18,12 @@ export class AmmoSalesService {
   }
 
   async create(dto: CreateAmmoSaleDto): Promise<AmmoSale> {
+    if (!dto.isInternalConsumption && !dto.customerId) {
+      throw new BadRequestException(
+        'Debe indicar un cliente o marcar como Consumo interno.',
+      );
+    }
+
     return this.dataSource.transaction(async (manager) => {
       const stock = await manager.findOne(AmmoCaliberStock, {
         where: { caliber: dto.caliber },
@@ -35,14 +41,20 @@ export class AmmoSalesService {
         );
       }
 
+      const stockBefore = stock.quantity;
       stock.quantity -= dto.quantity;
+      const stockAfter = stock.quantity;
       await manager.save(stock);
 
       const sale = manager.create(AmmoSale, {
         quantity: dto.quantity,
         brand: dto.brand,
         caliber: dto.caliber,
+        stockBefore,
+        stockAfter,
         supplier: { id: dto.supplierId },
+        customer: dto.customerId ? { id: dto.customerId } : null,
+        isInternalConsumption: dto.isInternalConsumption ?? false,
       });
 
       return manager.save(sale);

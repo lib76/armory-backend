@@ -9,6 +9,7 @@ import { OrdersModule } from './orders/orders.module';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { AmmoStockModule } from './ammo-stock/ammo-stock.module';
 import { AmmoSalesModule } from './ammo-sales/ammo-sales.module';
+import { CustomersModule } from './customers/customers.module';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -34,6 +35,7 @@ import { HealthController } from './health.controller';
     SuppliersModule,
     AmmoStockModule,
     AmmoSalesModule,
+    CustomersModule,
   ],
 })
 export class AppModule {}
