@@ -17,6 +17,15 @@ export class Customer {
   @Column({ unique: true })
   clu: string;
 
+  @Column({ type: 'varchar', nullable: true })
+  phone: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  email: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  address: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

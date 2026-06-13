@@ -1,4 +1,5 @@
-import { IsString, MinLength, Matches } from 'class-validator';
+import { IsString, MinLength, Matches, IsOptional, IsEmail } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateCustomerDto {
   @IsString()
@@ -16,4 +17,19 @@ export class CreateCustomerDto {
   @IsString()
   @MinLength(2)
   clu: string;
+
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => value || undefined)
+  phone?: string;
+
+  @IsOptional()
+  @IsEmail({}, { message: 'Email inválido' })
+  @Transform(({ value }) => value || undefined)
+  email?: string;
+
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => value || undefined)
+  address?: string;
 }
