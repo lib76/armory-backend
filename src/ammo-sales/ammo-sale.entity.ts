@@ -23,10 +23,10 @@ export class AmmoSale {
   @Column()
   caliber: string;
 
-  @Column({ name: 'stock_before' })
+  @Column({ name: 'stock_before', default: 0 })
   stockBefore: number;
 
-  @Column({ name: 'stock_after' })
+  @Column({ name: 'stock_after', default: 0 })
   stockAfter: number;
 
   @ManyToOne(() => Supplier, { eager: true })
