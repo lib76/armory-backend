@@ -21,9 +21,10 @@ export class ProductsController {
   @Get()
   findAll(
     @Query('categoryId') categoryId?: string,
+    @Query('brandId') brandId?: string,
     @Query('showAll') showAll?: string,
   ) {
-    return this.productsService.findAll(categoryId, showAll === 'true');
+    return this.productsService.findAll(categoryId, brandId, showAll === 'true');
   }
 
   @Get(':id')

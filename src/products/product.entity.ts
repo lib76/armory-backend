@@ -8,6 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Category } from '../categories/category.entity';
+import { Brand } from '../brands/brand.entity';
 
 @Entity('products')
 export class Product {
@@ -32,6 +33,10 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.products, { eager: true })
   @JoinColumn({ name: 'category_id' })
   category: Category;
+
+  @ManyToOne(() => Brand, (brand) => brand.products, { eager: true, nullable: true })
+  @JoinColumn({ name: 'brand_id' })
+  brand: Brand | null;
 
   @Column({ name: 'is_active', default: true })
   isActive: boolean;

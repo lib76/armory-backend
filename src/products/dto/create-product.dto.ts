@@ -1,4 +1,5 @@
-import { IsString, IsNumber, IsOptional, Min, IsUUID, IsBoolean } from 'class-validator';
+import { IsString, IsNumber, IsOptional, Min, IsUUID, IsBoolean, ValidateIf } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateProductDto {
   @IsString()
@@ -23,6 +24,12 @@ export class CreateProductDto {
 
   @IsUUID()
   categoryId: string;
+
+  @IsOptional()
+  @ValidateIf((o: { brandId?: string | null }) => o.brandId !== null)
+  @IsUUID()
+  @Transform(({ value }: { value: unknown }) => (value === '' ? null : value))
+  brandId?: string | null;
 
   @IsOptional()
   @IsBoolean()

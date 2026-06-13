@@ -12,6 +12,7 @@ import { AmmoSalesModule } from './ammo-sales/ammo-sales.module';
 import { CustomersModule } from './customers/customers.module';
 import { HealthController } from './health.controller';
 import { UploadsModule } from './uploads/uploads.module';
+import { BrandsModule } from './brands/brands.module';
 
 @Module({
   controllers: [HealthController],
@@ -38,6 +39,7 @@ import { UploadsModule } from './uploads/uploads.module';
     AmmoSalesModule,
     CustomersModule,
     UploadsModule,
+    BrandsModule,
   ],
 })
 export class AppModule {}
