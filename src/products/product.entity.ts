@@ -26,7 +26,7 @@ export class Product {
   @Column({ default: 0 })
   stock: number;
 
-  @Column({ name: 'image_url', nullable: true })
+  @Column({ name: 'image_url', type: 'varchar', nullable: true })
   imageUrl: string | null;
 
   @ManyToOne(() => Category, (category) => category.products, { eager: true })
