@@ -19,8 +19,11 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAll(@Query('categoryId') categoryId?: string) {
-    return this.productsService.findAll(categoryId);
+  findAll(
+    @Query('categoryId') categoryId?: string,
+    @Query('showAll') showAll?: string,
+  ) {
+    return this.productsService.findAll(categoryId, showAll === 'true');
   }
 
   @Get(':id')

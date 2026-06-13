@@ -11,6 +11,7 @@ import { AmmoStockModule } from './ammo-stock/ammo-stock.module';
 import { AmmoSalesModule } from './ammo-sales/ammo-sales.module';
 import { CustomersModule } from './customers/customers.module';
 import { HealthController } from './health.controller';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   controllers: [HealthController],
@@ -36,6 +37,7 @@ import { HealthController } from './health.controller';
     AmmoStockModule,
     AmmoSalesModule,
     CustomersModule,
+    UploadsModule,
   ],
 })
 export class AppModule {}

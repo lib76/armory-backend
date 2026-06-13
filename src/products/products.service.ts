@@ -12,21 +12,20 @@ export class ProductsService {
     private readonly repo: Repository<Product>,
   ) {}
 
-  async findAll(categoryId?: string): Promise<Product[]> {
-    const qb = this.repo
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category')
-      .where('product.is_active = :active', { active: true });
+  findAll(categoryId?: string, showAll = false): Promise<Product[]> {
+    const where: Record<string, unknown> = {};
+    if (!showAll) where.isActive = true;
+    if (categoryId) where.category = { id: categoryId };
 
-    if (categoryId) {
-      qb.andWhere('category.id = :categoryId', { categoryId });
-    }
-
-    return qb.orderBy('product.created_at', 'DESC').getMany();
+    return this.repo.find({
+      where,
+      relations: ['category'],
+      order: { createdAt: 'DESC' },
+    });
   }
 
   async findOne(id: string): Promise<Product> {
-    const product = await this.repo.findOne({ where: { id } });
+    const product = await this.repo.findOne({ where: { id }, relations: ['category'] });
     if (!product) throw new NotFoundException('Producto no encontrado');
     return product;
   }
@@ -46,16 +45,16 @@ export class ProductsService {
 
   async update(id: string, dto: UpdateProductDto): Promise<Product> {
     const product = await this.findOne(id);
-    Object.assign(product, dto);
-    if (dto.categoryId) {
-      product.category = { id: dto.categoryId } as Product['category'];
+    const { categoryId, ...rest } = dto;
+    Object.assign(product, rest);
+    if (categoryId) {
+      product.category = { id: categoryId } as Product['category'];
     }
     return this.repo.save(product);
   }
 
   async remove(id: string): Promise<void> {
     const product = await this.findOne(id);
-    product.isActive = false;
-    await this.repo.save(product);
+    await this.repo.remove(product);
   }
 }
