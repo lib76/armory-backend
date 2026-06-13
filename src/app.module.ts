@@ -6,6 +6,9 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
+import { SuppliersModule } from './suppliers/suppliers.module';
+import { AmmoStockModule } from './ammo-stock/ammo-stock.module';
+import { AmmoSalesModule } from './ammo-sales/ammo-sales.module';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -28,6 +31,9 @@ import { HealthController } from './health.controller';
     ProductsModule,
     CategoriesModule,
     OrdersModule,
+    SuppliersModule,
+    AmmoStockModule,
+    AmmoSalesModule,
   ],
 })
 export class AppModule {}
