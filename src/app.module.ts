@@ -20,7 +20,7 @@ import { HealthController } from './health.controller';
         url: config.get<string>('DATABASE_URL'),
         ssl: { rejectUnauthorized: false },
         autoLoadEntities: true,
-        synchronize: process.env.NODE_ENV !== 'production',
+        synchronize: true,
       }),
     }),
     AuthModule,
