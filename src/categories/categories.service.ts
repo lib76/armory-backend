@@ -5,16 +5,16 @@ import { Category } from './category.entity';
 import type { CreateCategoryDto } from './dto/create-category.dto';
 
 const DEFAULT_CATEGORIES = [
-  { name: 'Pistolas',    slug: 'pistolas',    isFirearm: true  },
-  { name: 'Rifles',      slug: 'rifles',      isFirearm: true  },
-  { name: 'Escopetas',   slug: 'escopetas',   isFirearm: true  },
-  { name: 'Munición',    slug: 'municion',    isFirearm: false },
-  { name: 'Accesorios',  slug: 'accesorios',  isFirearm: false },
-  { name: 'Indumentaria',slug: 'indumentaria',isFirearm: false },
-  { name: 'Airsoft',     slug: 'airsoft',     isFirearm: false },
-  { name: 'Cuchillos',   slug: 'cuchillos',   isFirearm: false },
-  { name: 'Arquería',    slug: 'arqueria',    isFirearm: false },
-  { name: 'Decoración',  slug: 'decoracion',  isFirearm: false },
+  { name: 'Pistolas',    slug: 'pistolas',    isFirearm: true,  isFeatured: true  },
+  { name: 'Rifles',      slug: 'rifles',      isFirearm: true,  isFeatured: true  },
+  { name: 'Escopetas',   slug: 'escopetas',   isFirearm: true,  isFeatured: true  },
+  { name: 'Munición',    slug: 'municion',    isFirearm: false, isFeatured: true  },
+  { name: 'Accesorios',  slug: 'accesorios',  isFirearm: false, isFeatured: true  },
+  { name: 'Indumentaria',slug: 'indumentaria',isFirearm: false, isFeatured: false },
+  { name: 'Airsoft',     slug: 'airsoft',     isFirearm: false, isFeatured: false },
+  { name: 'Cuchillos',   slug: 'cuchillos',   isFirearm: false, isFeatured: false },
+  { name: 'Arquería',    slug: 'arqueria',    isFirearm: false, isFeatured: false },
+  { name: 'Decoración',  slug: 'decoracion',  isFirearm: false, isFeatured: false },
 ];
 
 @Injectable()
@@ -29,8 +29,8 @@ export class CategoriesService implements OnModuleInit {
       const exists = await this.repo.findOne({ where: { slug: cat.slug } });
       if (!exists) {
         await this.repo.save(this.repo.create(cat));
-      } else if (exists.isFirearm !== cat.isFirearm) {
-        await this.repo.save({ ...exists, isFirearm: cat.isFirearm });
+      } else if (exists.isFirearm !== cat.isFirearm || exists.isFeatured !== cat.isFeatured) {
+        await this.repo.save({ ...exists, isFirearm: cat.isFirearm, isFeatured: cat.isFeatured });
       }
     }
   }

@@ -1,4 +1,4 @@
-import { IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsString()
@@ -8,4 +8,12 @@ export class CreateCategoryDto {
   @IsString()
   @MinLength(2)
   slug: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isFirearm?: boolean;
 }

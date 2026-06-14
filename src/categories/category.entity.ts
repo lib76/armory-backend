@@ -15,6 +15,9 @@ export class Category {
   @Column({ name: 'is_firearm', default: false })
   isFirearm: boolean;
 
+  @Column({ name: 'is_featured', default: false })
+  isFeatured: boolean;
+
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
 
