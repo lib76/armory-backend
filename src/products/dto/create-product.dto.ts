@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional, Min, IsUUID, IsBoolean, ValidateIf, IsIn } from 'class-validator';
+import { IsString, IsNumber, IsOptional, Min, IsUUID, IsBoolean, ValidateIf, IsIn, IsArray } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateProductDto {
@@ -19,8 +19,9 @@ export class CreateProductDto {
   stock?: number;
 
   @IsOptional()
-  @IsString()
-  imageUrl?: string;
+  @IsArray()
+  @IsString({ each: true })
+  imageUrls?: string[];
 
   @IsUUID()
   categoryId: string;

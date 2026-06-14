@@ -5,10 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { Category } from '../categories/category.entity';
 import { Brand } from '../brands/brand.entity';
+import { ProductImage } from './product-image.entity';
 
 @Entity('products')
 export class Product {
@@ -46,6 +48,9 @@ export class Product {
 
   @Column({ type: 'varchar', length: 50, nullable: true, default: null })
   caliber: string | null;
+
+  @OneToMany(() => ProductImage, (img) => img.product, { eager: true, cascade: true })
+  images: ProductImage[];
 
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
