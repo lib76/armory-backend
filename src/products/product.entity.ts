@@ -41,6 +41,12 @@ export class Product {
   @Column({ type: 'varchar', length: 3, default: 'ARS' })
   currency: 'ARS' | 'USD';
 
+  @Column({ type: 'varchar', length: 10, nullable: true, default: null })
+  condition: 'nuevo' | 'usado' | null;
+
+  @Column({ type: 'varchar', length: 50, nullable: true, default: null })
+  caliber: string | null;
+
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 

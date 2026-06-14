@@ -36,6 +36,14 @@ export class CreateProductDto {
   currency?: 'ARS' | 'USD';
 
   @IsOptional()
+  @IsIn(['nuevo', 'usado'])
+  condition?: 'nuevo' | 'usado' | null;
+
+  @IsOptional()
+  @IsString()
+  caliber?: string | null;
+
+  @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 }

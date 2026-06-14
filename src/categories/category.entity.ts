@@ -12,6 +12,9 @@ export class Category {
   @Column({ unique: true })
   slug: string;
 
+  @Column({ name: 'is_firearm', default: false })
+  isFirearm: boolean;
+
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
 

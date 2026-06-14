@@ -40,6 +40,8 @@ export class ProductsService {
       stock: dto.stock ?? 0,
       imageUrl: dto.imageUrl ?? null,
       currency: dto.currency ?? 'ARS',
+      condition: dto.condition ?? null,
+      caliber: dto.caliber ?? null,
       isActive: dto.isActive ?? true,
       category: { id: dto.categoryId },
       brand: dto.brandId ? ({ id: dto.brandId } as Brand) : null,
