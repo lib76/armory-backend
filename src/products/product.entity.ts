@@ -38,6 +38,9 @@ export class Product {
   @JoinColumn({ name: 'brand_id' })
   brand: Brand | null;
 
+  @Column({ type: 'varchar', length: 3, default: 'ARS' })
+  currency: 'ARS' | 'USD';
+
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
