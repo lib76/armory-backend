@@ -24,4 +24,8 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsString()
   imageUrl?: string | null;
+
+  @IsOptional()
+  @IsString()
+  color?: string | null;
 }
