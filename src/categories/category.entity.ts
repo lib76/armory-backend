@@ -21,6 +21,9 @@ export class Category {
   @Column({ name: 'featured_order', type: 'int', nullable: true, default: null })
   featuredOrder: number | null;
 
+  @Column({ name: 'image_url', type: 'varchar', nullable: true, default: null })
+  imageUrl: string | null;
+
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
 

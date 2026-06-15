@@ -30,7 +30,7 @@ export class ProductsService {
   }
 
   async findOne(id: string): Promise<Product> {
-    const product = await this.repo.findOne({ where: { id }, relations: ['category', 'brand'] });
+    const product = await this.repo.findOne({ where: { id }, relations: ['category', 'brand', 'images'] });
     if (!product) throw new NotFoundException('Producto no encontrado');
     product.images = product.images?.sort((a, b) => a.position - b.position) ?? [];
     return product;

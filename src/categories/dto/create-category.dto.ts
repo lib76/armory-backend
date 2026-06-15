@@ -20,4 +20,8 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsInt()
   featuredOrder?: number | null;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string | null;
 }
