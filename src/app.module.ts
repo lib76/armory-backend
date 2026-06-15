@@ -13,6 +13,7 @@ import { CustomersModule } from './customers/customers.module';
 import { HealthController } from './health.controller';
 import { UploadsModule } from './uploads/uploads.module';
 import { BrandsModule } from './brands/brands.module';
+import { StoreConfigModule } from './store-config/store-config.module';
 
 @Module({
   controllers: [HealthController],
@@ -40,6 +41,7 @@ import { BrandsModule } from './brands/brands.module';
     CustomersModule,
     UploadsModule,
     BrandsModule,
+    StoreConfigModule,
   ],
 })
 export class AppModule {}
