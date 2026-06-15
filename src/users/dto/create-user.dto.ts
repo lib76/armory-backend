@@ -15,6 +15,6 @@ export class CreateUserDto {
   lastName: string;
 
   @IsOptional()
-  @IsIn(['customer', 'admin'])
-  role?: 'customer' | 'admin';
+  @IsIn(['customer', 'admin', 'superadmin'])
+  role?: 'customer' | 'admin' | 'superadmin';
 }

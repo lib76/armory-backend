@@ -1,4 +1,4 @@
-import { IsBoolean, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsBoolean, IsInt, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsString()
@@ -16,4 +16,8 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsBoolean()
   isFirearm?: boolean;
+
+  @IsOptional()
+  @IsInt()
+  featuredOrder?: number | null;
 }

@@ -18,6 +18,9 @@ export class Category {
   @Column({ name: 'is_featured', default: false })
   isFeatured: boolean;
 
+  @Column({ name: 'featured_order', type: 'int', nullable: true, default: null })
+  featuredOrder: number | null;
+
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
 

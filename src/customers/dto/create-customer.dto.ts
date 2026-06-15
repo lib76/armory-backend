@@ -32,4 +32,9 @@ export class CreateCustomerDto {
   @IsString()
   @Transform(({ value }) => value || undefined)
   address?: string;
+
+  @IsOptional()
+  @IsString()
+  @Transform(({ value }) => value || undefined)
+  notes?: string;
 }

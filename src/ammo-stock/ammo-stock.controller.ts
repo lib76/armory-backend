@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Req, UseGuards } from '@nestjs/common';
 import { AmmoStockService } from './ammo-stock.service';
 import { UpsertAmmoStockDto } from './dto/upsert-ammo-stock.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import type { User } from '../users/user.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('ammo-stock')
@@ -13,8 +14,13 @@ export class AmmoStockController {
     return this.ammoStockService.findAll();
   }
 
+  @Get(':caliber/history')
+  findHistory(@Param('caliber') caliber: string) {
+    return this.ammoStockService.findHistory(decodeURIComponent(caliber));
+  }
+
   @Post()
-  upsert(@Body() dto: UpsertAmmoStockDto) {
-    return this.ammoStockService.upsert(dto);
+  upsert(@Body() dto: UpsertAmmoStockDto, @Req() req: { user: User }) {
+    return this.ammoStockService.upsert(dto, req.user);
   }
 }

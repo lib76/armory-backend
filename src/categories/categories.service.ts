@@ -5,16 +5,16 @@ import { Category } from './category.entity';
 import type { CreateCategoryDto } from './dto/create-category.dto';
 
 const DEFAULT_CATEGORIES = [
-  { name: 'Pistolas',    slug: 'pistolas',    isFirearm: true,  isFeatured: true  },
-  { name: 'Rifles',      slug: 'rifles',      isFirearm: true,  isFeatured: true  },
-  { name: 'Escopetas',   slug: 'escopetas',   isFirearm: true,  isFeatured: true  },
-  { name: 'Munición',    slug: 'municion',    isFirearm: false, isFeatured: true  },
-  { name: 'Accesorios',  slug: 'accesorios',  isFirearm: false, isFeatured: true  },
-  { name: 'Indumentaria',slug: 'indumentaria',isFirearm: false, isFeatured: false },
-  { name: 'Airsoft',     slug: 'airsoft',     isFirearm: false, isFeatured: false },
-  { name: 'Cuchillos',   slug: 'cuchillos',   isFirearm: false, isFeatured: false },
-  { name: 'Arquería',    slug: 'arqueria',    isFirearm: false, isFeatured: false },
-  { name: 'Decoración',  slug: 'decoracion',  isFirearm: false, isFeatured: false },
+  { name: 'Pistolas',     slug: 'pistolas',     isFirearm: true,  isFeatured: true,  featuredOrder: 0    },
+  { name: 'Rifles',       slug: 'rifles',       isFirearm: true,  isFeatured: true,  featuredOrder: 1    },
+  { name: 'Escopetas',    slug: 'escopetas',    isFirearm: true,  isFeatured: true,  featuredOrder: 2    },
+  { name: 'Munición',     slug: 'municion',     isFirearm: false, isFeatured: true,  featuredOrder: 3    },
+  { name: 'Accesorios',   slug: 'accesorios',   isFirearm: false, isFeatured: true,  featuredOrder: 4    },
+  { name: 'Indumentaria', slug: 'indumentaria', isFirearm: false, isFeatured: false, featuredOrder: null },
+  { name: 'Airsoft',      slug: 'airsoft',      isFirearm: false, isFeatured: false, featuredOrder: null },
+  { name: 'Cuchillos',    slug: 'cuchillos',    isFirearm: false, isFeatured: false, featuredOrder: null },
+  { name: 'Arquería',     slug: 'arqueria',     isFirearm: false, isFeatured: false, featuredOrder: null },
+  { name: 'Decoración',   slug: 'decoracion',   isFirearm: false, isFeatured: false, featuredOrder: null },
 ];
 
 @Injectable()
@@ -29,14 +29,31 @@ export class CategoriesService implements OnModuleInit {
       const exists = await this.repo.findOne({ where: { slug: cat.slug } });
       if (!exists) {
         await this.repo.save(this.repo.create(cat));
-      } else if (exists.isFirearm !== cat.isFirearm || exists.isFeatured !== cat.isFeatured) {
-        await this.repo.save({ ...exists, isFirearm: cat.isFirearm, isFeatured: cat.isFeatured });
+      } else {
+        const needsPatch =
+          exists.isFirearm !== cat.isFirearm ||
+          exists.isFeatured !== cat.isFeatured ||
+          (exists.featuredOrder === null && cat.featuredOrder !== null);
+        if (needsPatch) {
+          await this.repo.save({
+            ...exists,
+            isFirearm: cat.isFirearm,
+            isFeatured: cat.isFeatured,
+            // only initialize featuredOrder if it hasn't been set yet
+            ...(exists.featuredOrder === null ? { featuredOrder: cat.featuredOrder } : {}),
+          });
+        }
       }
     }
   }
 
   findAll(): Promise<Category[]> {
-    return this.repo.find({ order: { name: 'ASC' } });
+    return this.repo
+      .createQueryBuilder('c')
+      .orderBy('CASE WHEN c.featured_order IS NULL THEN 1 ELSE 0 END', 'ASC')
+      .addOrderBy('c.featured_order', 'ASC')
+      .addOrderBy('c.name', 'ASC')
+      .getMany();
   }
 
   async findOne(id: string): Promise<Category> {
@@ -54,6 +71,12 @@ export class CategoriesService implements OnModuleInit {
     const category = await this.findOne(id);
     Object.assign(category, dto);
     return this.repo.save(category);
+  }
+
+  async reorder(ids: string[]): Promise<void> {
+    for (let i = 0; i < ids.length; i++) {
+      await this.repo.update(ids[i], { featuredOrder: i });
+    }
   }
 
   async delete(id: string): Promise<void> {

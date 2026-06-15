@@ -26,6 +26,9 @@ export class Customer {
   @Column({ type: 'varchar', nullable: true })
   address: string | null;
 
+  @Column({ type: 'text', nullable: true })
+  notes: string | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

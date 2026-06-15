@@ -1,4 +1,4 @@
-import { IsString, IsInt, Min, MinLength } from 'class-validator';
+import { IsString, IsInt, Min, MinLength, IsOptional } from 'class-validator';
 
 export class UpsertAmmoStockDto {
   @IsString()
@@ -8,4 +8,8 @@ export class UpsertAmmoStockDto {
   @IsInt()
   @Min(0)
   quantity: number;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }
