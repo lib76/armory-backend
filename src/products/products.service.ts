@@ -73,16 +73,21 @@ export class ProductsService {
       product.brand = brandId ? ({ id: brandId } as Brand) : null;
     }
     if (imageUrls !== undefined) {
-      const existing = await this.imageRepo.find({ where: { product: { id } } });
-      if (existing.length > 0) await this.imageRepo.remove(existing);
+      // Use delete() instead of remove() to avoid loading stale entities into memory.
+      // Clear product.images so cascade doesn't re-insert the old objects.
+      await this.imageRepo.delete({ product: { id } });
+      product.images = [];
+      const newImages: ProductImage[] = [];
       for (let i = 0; i < imageUrls.length; i++) {
-        await this.imageRepo.save(
+        newImages.push(
           this.imageRepo.create({ product, url: imageUrls[i], position: i }),
         );
       }
+      if (newImages.length > 0) await this.imageRepo.save(newImages);
       product.imageUrl = imageUrls[0] ?? null;
     }
-    return this.repo.save(product);
+    await this.repo.save(product);
+    return this.findOne(id);
   }
 
   async remove(id: string): Promise<void> {
