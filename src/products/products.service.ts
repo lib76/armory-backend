@@ -24,7 +24,7 @@ export class ProductsService {
 
     return this.repo.find({
       where,
-      relations: ['category', 'brand'],
+      relations: ['category', 'brand', 'images'],
       order: { createdAt: 'DESC' },
     });
   }
