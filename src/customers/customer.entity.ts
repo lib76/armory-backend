@@ -11,11 +11,11 @@ export class Customer {
   @Column({ name: 'last_name' })
   lastName: string;
 
-  @Column({ unique: true })
-  dni: string;
+  @Column({ type: 'varchar', unique: true, nullable: true })
+  dni: string | null;
 
-  @Column({ unique: true })
-  clu: string;
+  @Column({ type: 'varchar', unique: true, nullable: true })
+  clu: string | null;
 
   @Column({ type: 'varchar', nullable: true })
   phone: string | null;

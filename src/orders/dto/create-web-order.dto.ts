@@ -27,7 +27,11 @@ export class CreateWebOrderDto {
 
   @IsString()
   @MinLength(2)
-  customerName: string;
+  customerFirstName: string;
+
+  @IsString()
+  @MinLength(2)
+  customerLastName: string;
 
   @IsString()
   @MinLength(6)

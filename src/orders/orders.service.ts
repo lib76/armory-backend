@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Order, OrderItem } from './order.entity';
 import { ProductsService } from '../products/products.service';
+import { CustomersService } from '../customers/customers.service';
 import type { CreateOrderDto } from './dto/create-order.dto';
 import type { CreateWebOrderDto } from './dto/create-web-order.dto';
 import type { UpdateOrderDto } from './dto/update-order.dto';
@@ -23,6 +24,7 @@ export class OrdersService {
     @InjectRepository(OrderItem)
     private readonly itemRepo: Repository<OrderItem>,
     private readonly productsService: ProductsService,
+    private readonly customersService: CustomersService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -64,6 +66,12 @@ export class OrdersService {
   }
 
   async createWebOrder(dto: CreateWebOrderDto): Promise<Order> {
+    const customer = await this.customersService.findOrCreate({
+      firstName: dto.customerFirstName,
+      lastName: dto.customerLastName,
+      phone: dto.customerPhone,
+    });
+
     return this.dataSource.transaction(async (manager) => {
       let total = 0;
       const orderItems: OrderItem[] = [];
@@ -90,7 +98,8 @@ export class OrdersService {
 
       const order = manager.create(Order, {
         user: null,
-        customerName: dto.customerName,
+        customer,
+        customerName: `${dto.customerFirstName.trim()} ${dto.customerLastName.trim()}`,
         customerPhone: dto.customerPhone,
         customerAddress: dto.customerAddress ?? null,
         currency: dto.currency ?? 'ARS',

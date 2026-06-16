@@ -9,6 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
+import { Customer } from '../customers/customer.entity';
 
 export type OrderStatus = 'pending' | 'confirmed' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
 
@@ -20,6 +21,10 @@ export class Order {
   @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'user_id' })
   user: User | null;
+
+  @ManyToOne(() => Customer, { nullable: true, eager: false })
+  @JoinColumn({ name: 'customer_id' })
+  customer: Customer | null;
 
   @Column({ type: 'varchar', nullable: true, name: 'customer_name' })
   customerName: string | null;
