@@ -18,6 +18,10 @@ export class CreateCategoryDto {
   isFirearm?: boolean;
 
   @IsOptional()
+  @IsBoolean()
+  isFreeSale?: boolean;
+
+  @IsOptional()
   @IsInt()
   featuredOrder?: number | null;
 

@@ -15,6 +15,9 @@ export class Category {
   @Column({ name: 'is_firearm', default: false })
   isFirearm: boolean;
 
+  @Column({ name: 'is_free_sale', default: false })
+  isFreeSale: boolean;
+
   @Column({ name: 'is_featured', default: false })
   isFeatured: boolean;
 
