@@ -10,22 +10,40 @@ import {
 } from 'typeorm';
 import { User } from '../users/user.entity';
 
-export type OrderStatus = 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'confirmed' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
 
 @Entity('orders')
 export class Order {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { nullable: true })
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user: User | null;
+
+  @Column({ type: 'varchar', nullable: true, name: 'customer_name' })
+  customerName: string | null;
+
+  @Column({ type: 'varchar', nullable: true, name: 'customer_phone' })
+  customerPhone: string | null;
+
+  @Column({ type: 'varchar', nullable: true, name: 'customer_address' })
+  customerAddress: string | null;
 
   @Column({ type: 'numeric', precision: 10, scale: 2 })
   total: number;
 
+  @Column({ default: 'ARS' })
+  currency: string;
+
   @Column({ type: 'varchar', default: 'pending' })
   status: OrderStatus;
+
+  @Column({ type: 'text', nullable: true })
+  notes: string | null;
+
+  @Column({ type: 'timestamptz', nullable: true, name: 'paid_at' })
+  paidAt: Date | null;
 
   @OneToMany(() => OrderItem, (item) => item.order, { cascade: true, eager: true })
   items: OrderItem[];
