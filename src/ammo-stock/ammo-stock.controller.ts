@@ -14,6 +14,11 @@ export class AmmoStockController {
     return this.ammoStockService.findAll();
   }
 
+  @Get('movements')
+  findAllHistory() {
+    return this.ammoStockService.findAllHistory();
+  }
+
   @Get(':caliber/history')
   findHistory(@Param('caliber') caliber: string) {
     return this.ammoStockService.findHistory(decodeURIComponent(caliber));

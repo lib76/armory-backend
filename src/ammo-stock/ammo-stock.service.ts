@@ -14,6 +14,7 @@ export interface HistoryRecordInput {
   admin: Pick<User, 'id' | 'firstName' | 'lastName'> | null;
   customerId?: string | null;
   customerName?: string | null;
+  ammoSaleId?: string | null;
   notes?: string | null;
 }
 
@@ -39,6 +40,10 @@ export class AmmoStockService {
       where: { caliber },
       order: { createdAt: 'DESC' },
     });
+  }
+
+  findAllHistory(): Promise<AmmoStockHistory[]> {
+    return this.historyRepo.find({ order: { createdAt: 'DESC' } });
   }
 
   async upsert(dto: UpsertAmmoStockDto, admin: Pick<User, 'id' | 'firstName' | 'lastName'> | null): Promise<AmmoCaliberStock> {
@@ -77,6 +82,7 @@ export class AmmoStockService {
         : 'Sistema',
       customerId: input.customerId ?? null,
       customerName: input.customerName ?? null,
+      ammoSaleId: input.ammoSaleId ?? null,
       notes: input.notes ?? null,
     });
     await this.historyRepo.save(entry);

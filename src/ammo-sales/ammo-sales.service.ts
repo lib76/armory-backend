@@ -77,6 +77,7 @@ export class AmmoSalesService {
       admin,
       customerId: full?.customer?.id ?? null,
       customerName,
+      ammoSaleId: sale.id,
     });
 
     return sale;

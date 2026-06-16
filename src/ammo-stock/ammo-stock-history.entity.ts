@@ -35,6 +35,9 @@ export class AmmoStockHistory {
   @Column({ name: 'customer_name', type: 'varchar', nullable: true })
   customerName: string | null;
 
+  @Column({ name: 'ammo_sale_id', type: 'uuid', nullable: true })
+  ammoSaleId: string | null;
+
   @Column({ type: 'text', nullable: true })
   notes: string | null;
 
