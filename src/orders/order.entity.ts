@@ -53,6 +53,9 @@ export class Order {
   @Column({ type: 'numeric', precision: 12, scale: 4, nullable: true, name: 'exchange_rate' })
   exchangeRate: number | null;
 
+  @Column({ type: 'varchar', length: 10, nullable: true, name: 'payment_method' })
+  paymentMethod: 'cash' | 'transfer' | null;
+
   @OneToMany(() => OrderItem, (item) => item.order, { cascade: true, eager: true })
   items: OrderItem[];
 

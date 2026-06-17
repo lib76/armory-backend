@@ -150,6 +150,7 @@ export class OrdersService {
         order.paidAt = new Date();
       } else if (dto.status !== 'paid') {
         order.paidAt = null;
+        order.paymentMethod = null;
         if (order.currency === 'USD') order.exchangeRate = null;
       }
     }
@@ -164,6 +165,10 @@ export class OrdersService {
 
     if (dto.exchangeRate !== undefined) {
       order.exchangeRate = dto.exchangeRate;
+    }
+
+    if (dto.paymentMethod !== undefined) {
+      order.paymentMethod = dto.paymentMethod;
     }
 
     return this.orderRepo.save(order);

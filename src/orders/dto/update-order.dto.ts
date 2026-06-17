@@ -18,4 +18,8 @@ export class UpdateOrderDto {
   @IsNumber()
   @IsPositive()
   exchangeRate?: number;
+
+  @IsOptional()
+  @IsIn(['cash', 'transfer'])
+  paymentMethod?: 'cash' | 'transfer';
 }
