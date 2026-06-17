@@ -35,10 +35,12 @@ export class OrdersService {
       const orderItems: OrderItem[] = [];
 
       for (const itemDto of dto.items) {
-        const product = await manager.findOne(Product, {
-          where: { id: itemDto.productId },
-          lock: { mode: 'pessimistic_write' },
-        });
+        const product = await manager
+          .getRepository(Product)
+          .createQueryBuilder('product')
+          .setLock('pessimistic_write')
+          .where('product.id = :id', { id: itemDto.productId })
+          .getOne();
         if (!product) throw new NotFoundException('Producto no encontrado');
 
         if (product.stock < itemDto.quantity) {
@@ -82,10 +84,13 @@ export class OrdersService {
       const orderItems: OrderItem[] = [];
 
       for (const itemDto of dto.items) {
-        const product = await manager.findOne(Product, {
-          where: { id: itemDto.productId },
-          lock: { mode: 'pessimistic_write' },
-        });
+        const product = await manager
+          .getRepository(Product)
+          .createQueryBuilder('product')
+          .setLock('pessimistic_write')
+          .where('product.id = :id', { id: itemDto.productId })
+          .getOne();
+
         if (!product) throw new NotFoundException('Producto no encontrado');
 
         if (product.stock < itemDto.quantity) {
@@ -150,6 +155,10 @@ export class OrdersService {
 
     if (dto.notes !== undefined) {
       order.notes = dto.notes;
+    }
+
+    if (dto.customerAddress !== undefined) {
+      order.customerAddress = dto.customerAddress || null;
     }
 
     return this.orderRepo.save(order);
