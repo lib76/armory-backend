@@ -16,4 +16,8 @@ export class CreateTemplateDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  autoApply?: boolean;
 }

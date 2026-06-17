@@ -68,7 +68,20 @@ export class FixedExpensesService {
   // Creates one expense per active template that has no instance yet in `month`.
   // Idempotent: safe to call multiple times for the same month.
   async applyTemplates(month: string): Promise<FixedExpense[]> {
-    const templates = await this.templateRepo.find({ where: { isActive: true } });
+    return this.applyTemplatesWhere(month, { isActive: true });
+  }
+
+  // Same as applyTemplates but restricted to templates with autoApply = true.
+  // Called by the monthly cron job.
+  async autoApplyTemplates(month: string): Promise<FixedExpense[]> {
+    return this.applyTemplatesWhere(month, { isActive: true, autoApply: true });
+  }
+
+  private async applyTemplatesWhere(
+    month: string,
+    where: { isActive: boolean; autoApply?: boolean },
+  ): Promise<FixedExpense[]> {
+    const templates = await this.templateRepo.find({ where });
     const existing = await this.expenseRepo.find({ where: { month } });
     const usedTemplateIds = new Set(existing.map((e) => e.templateId).filter(Boolean));
 

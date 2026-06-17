@@ -17,6 +17,9 @@ export class ExpenseTemplate {
   @Column({ name: 'is_active', default: true })
   isActive: boolean;
 
+  @Column({ name: 'auto_apply', default: false })
+  autoApply: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 }
