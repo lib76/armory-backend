@@ -14,6 +14,7 @@ import { HealthController } from './health.controller';
 import { UploadsModule } from './uploads/uploads.module';
 import { BrandsModule } from './brands/brands.module';
 import { StoreConfigModule } from './store-config/store-config.module';
+import { FixedExpensesModule } from './fixed-expenses/fixed-expenses.module';
 
 @Module({
   controllers: [HealthController],
@@ -42,6 +43,7 @@ import { StoreConfigModule } from './store-config/store-config.module';
     UploadsModule,
     BrandsModule,
     StoreConfigModule,
+    FixedExpensesModule,
   ],
 })
 export class AppModule {}
