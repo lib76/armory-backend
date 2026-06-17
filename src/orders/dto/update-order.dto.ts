@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsIn } from 'class-validator';
+import { IsOptional, IsString, IsIn, IsNumber, IsPositive } from 'class-validator';
 import type { OrderStatus } from '../order.entity';
 
 export class UpdateOrderDto {
@@ -13,4 +13,9 @@ export class UpdateOrderDto {
   @IsOptional()
   @IsString()
   customerAddress?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  exchangeRate?: number;
 }

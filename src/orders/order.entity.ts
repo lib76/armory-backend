@@ -50,6 +50,9 @@ export class Order {
   @Column({ type: 'timestamptz', nullable: true, name: 'paid_at' })
   paidAt: Date | null;
 
+  @Column({ type: 'numeric', precision: 12, scale: 4, nullable: true, name: 'exchange_rate' })
+  exchangeRate: number | null;
+
   @OneToMany(() => OrderItem, (item) => item.order, { cascade: true, eager: true })
   items: OrderItem[];
 

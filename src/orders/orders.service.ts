@@ -150,6 +150,7 @@ export class OrdersService {
         order.paidAt = new Date();
       } else if (dto.status !== 'paid') {
         order.paidAt = null;
+        if (order.currency === 'USD') order.exchangeRate = null;
       }
     }
 
@@ -159,6 +160,10 @@ export class OrdersService {
 
     if (dto.customerAddress !== undefined) {
       order.customerAddress = dto.customerAddress || null;
+    }
+
+    if (dto.exchangeRate !== undefined) {
+      order.exchangeRate = dto.exchangeRate;
     }
 
     return this.orderRepo.save(order);
@@ -180,7 +185,14 @@ export class OrdersService {
 
     const orders = await qb.getMany();
 
-    const totalRevenue = orders.reduce((sum, o) => sum + Number(o.total), 0);
+    function toARS(o: Order): number {
+      if (o.currency === 'USD' && o.exchangeRate) {
+        return Number(o.total) * Number(o.exchangeRate);
+      }
+      return Number(o.total);
+    }
+
+    const totalRevenue = orders.reduce((sum, o) => sum + toARS(o), 0);
     const orderCount = orders.length;
     const averageOrderValue = orderCount > 0 ? totalRevenue / orderCount : 0;
 
@@ -190,7 +202,7 @@ export class OrdersService {
       const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
       const current = byMonthMap.get(month) ?? { revenue: 0, count: 0 };
       byMonthMap.set(month, {
-        revenue: current.revenue + Number(order.total),
+        revenue: current.revenue + toARS(order),
         count: current.count + 1,
       });
     }

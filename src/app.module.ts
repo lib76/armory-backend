@@ -18,6 +18,7 @@ import { StoreConfigModule } from './store-config/store-config.module';
 import { FixedExpensesModule } from './fixed-expenses/fixed-expenses.module';
 import { ManualIncomesModule } from './manual-incomes/manual-incomes.module';
 import { ManualExpensesModule } from './manual-expenses/manual-expenses.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   controllers: [HealthController],
@@ -50,6 +51,7 @@ import { ManualExpensesModule } from './manual-expenses/manual-expenses.module';
     FixedExpensesModule,
     ManualIncomesModule,
     ManualExpensesModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}
