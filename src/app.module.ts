@@ -16,6 +16,7 @@ import { UploadsModule } from './uploads/uploads.module';
 import { BrandsModule } from './brands/brands.module';
 import { StoreConfigModule } from './store-config/store-config.module';
 import { FixedExpensesModule } from './fixed-expenses/fixed-expenses.module';
+import { ManualIncomesModule } from './manual-incomes/manual-incomes.module';
 
 @Module({
   controllers: [HealthController],
@@ -46,6 +47,7 @@ import { FixedExpensesModule } from './fixed-expenses/fixed-expenses.module';
     BrandsModule,
     StoreConfigModule,
     FixedExpensesModule,
+    ManualIncomesModule,
   ],
 })
 export class AppModule {}

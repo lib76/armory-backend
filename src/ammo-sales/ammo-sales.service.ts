@@ -30,6 +30,7 @@ export class AmmoSalesService {
     const sale = await this.dataSource.transaction(async (manager) => {
       const stock = await manager.findOne(AmmoCaliberStock, {
         where: { caliber: dto.caliber },
+        lock: { mode: 'pessimistic_write' },
       });
 
       if (!stock) {

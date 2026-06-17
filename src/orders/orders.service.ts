@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { Order, OrderItem } from './order.entity';
+import { Product } from '../products/product.entity';
 import { ProductsService } from '../products/products.service';
 import { CustomersService } from '../customers/customers.service';
 import type { CreateOrderDto } from './dto/create-order.dto';
@@ -34,7 +35,11 @@ export class OrdersService {
       const orderItems: OrderItem[] = [];
 
       for (const itemDto of dto.items) {
-        const product = await this.productsService.findOne(itemDto.productId);
+        const product = await manager.findOne(Product, {
+          where: { id: itemDto.productId },
+          lock: { mode: 'pessimistic_write' },
+        });
+        if (!product) throw new NotFoundException('Producto no encontrado');
 
         if (product.stock < itemDto.quantity) {
           throw new BadRequestException(`Stock insuficiente para "${product.name}"`);
@@ -77,7 +82,11 @@ export class OrdersService {
       const orderItems: OrderItem[] = [];
 
       for (const itemDto of dto.items) {
-        const product = await this.productsService.findOne(itemDto.productId);
+        const product = await manager.findOne(Product, {
+          where: { id: itemDto.productId },
+          lock: { mode: 'pessimistic_write' },
+        });
+        if (!product) throw new NotFoundException('Producto no encontrado');
 
         if (product.stock < itemDto.quantity) {
           throw new BadRequestException(`Stock insuficiente para "${product.name}"`);
