@@ -32,13 +32,13 @@ export class ManualIncome {
   @Column({ name: 'is_internal', default: false })
   isInternal: boolean;
 
-  @Column({ nullable: true, name: 'customer_id' })
+  @Column({ type: 'varchar', nullable: true, name: 'customer_id' })
   customerId: string | null;
 
-  @Column({ nullable: true, name: 'customer_name' })
+  @Column({ type: 'varchar', nullable: true, name: 'customer_name' })
   customerName: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', nullable: true })
   notes: string | null;
 
   // User-specified date of the income (YYYY-MM-DD).

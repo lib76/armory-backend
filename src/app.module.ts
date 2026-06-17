@@ -17,6 +17,7 @@ import { BrandsModule } from './brands/brands.module';
 import { StoreConfigModule } from './store-config/store-config.module';
 import { FixedExpensesModule } from './fixed-expenses/fixed-expenses.module';
 import { ManualIncomesModule } from './manual-incomes/manual-incomes.module';
+import { ManualExpensesModule } from './manual-expenses/manual-expenses.module';
 
 @Module({
   controllers: [HealthController],
@@ -48,6 +49,7 @@ import { ManualIncomesModule } from './manual-incomes/manual-incomes.module';
     StoreConfigModule,
     FixedExpensesModule,
     ManualIncomesModule,
+    ManualExpensesModule,
   ],
 })
 export class AppModule {}
