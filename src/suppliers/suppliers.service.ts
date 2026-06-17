@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Supplier } from './supplier.entity';
@@ -30,6 +30,10 @@ export class SuppliersService {
   async remove(id: string): Promise<void> {
     const supplier = await this.repo.findOne({ where: { id } });
     if (!supplier) throw new NotFoundException('Proveedor no encontrado');
-    await this.repo.remove(supplier);
+    try {
+      await this.repo.remove(supplier);
+    } catch {
+      throw new BadRequestException('No se puede eliminar un proveedor que tiene ventas de munición asociadas');
+    }
   }
 }

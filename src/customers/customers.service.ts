@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
 import { Customer } from './customer.entity';
@@ -51,7 +51,11 @@ export class CustomersService {
 
   async remove(id: string): Promise<void> {
     const customer = await this.findOne(id);
-    await this.repo.remove(customer);
+    try {
+      await this.repo.remove(customer);
+    } catch {
+      throw new BadRequestException('No se puede eliminar un cliente que tiene ventas de munición asociadas');
+    }
   }
 
   async findOrCreate(input: FindOrCreateInput): Promise<Customer> {

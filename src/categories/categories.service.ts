@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
 import type { CreateCategoryDto } from './dto/create-category.dto';
+import type { UpdateCategoryDto } from './dto/update-category.dto';
 
 const DEFAULT_CATEGORIES = [
   { name: 'Pistolas',     slug: 'pistolas',     isFirearm: true,  isFeatured: true,  featuredOrder: 0    },
@@ -25,24 +26,34 @@ export class CategoriesService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
+    const count = await this.repo.count();
+
+    if (count === 0) {
+      // Fresh database: seed all default categories
+      for (const cat of DEFAULT_CATEGORIES) {
+        await this.repo.save(this.repo.create(cat));
+      }
+      return;
+    }
+
+    // Existing database: only patch metadata on categories that still exist.
+    // Do NOT recreate categories the user has deliberately deleted.
     for (const cat of DEFAULT_CATEGORIES) {
       const exists = await this.repo.findOne({ where: { slug: cat.slug } });
-      if (!exists) {
-        await this.repo.save(this.repo.create(cat));
-      } else {
-        const needsPatch =
-          exists.isFirearm !== cat.isFirearm ||
-          exists.isFeatured !== cat.isFeatured ||
-          (exists.featuredOrder === null && cat.featuredOrder !== null);
-        if (needsPatch) {
-          await this.repo.save({
-            ...exists,
-            isFirearm: cat.isFirearm,
-            isFeatured: cat.isFeatured,
-            // only initialize featuredOrder if it hasn't been set yet
-            ...(exists.featuredOrder === null ? { featuredOrder: cat.featuredOrder } : {}),
-          });
-        }
+      if (!exists) continue;
+
+      const needsPatch =
+        exists.isFirearm !== cat.isFirearm ||
+        exists.isFeatured !== cat.isFeatured ||
+        (exists.featuredOrder === null && cat.featuredOrder !== null);
+
+      if (needsPatch) {
+        await this.repo.save({
+          ...exists,
+          isFirearm: cat.isFirearm,
+          isFeatured: cat.isFeatured,
+          ...(exists.featuredOrder === null ? { featuredOrder: cat.featuredOrder } : {}),
+        });
       }
     }
   }
@@ -67,7 +78,7 @@ export class CategoriesService implements OnModuleInit {
     return this.repo.save(category);
   }
 
-  async update(id: string, dto: Partial<CreateCategoryDto>): Promise<Category> {
+  async update(id: string, dto: UpdateCategoryDto): Promise<Category> {
     const category = await this.findOne(id);
     Object.assign(category, dto);
     return this.repo.save(category);

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Brand } from './brand.entity';
@@ -53,6 +53,10 @@ export class BrandsService {
 
   async delete(id: string): Promise<void> {
     const brand = await this.findOne(id);
-    await this.repo.remove(brand);
+    try {
+      await this.repo.remove(brand);
+    } catch {
+      throw new BadRequestException('No se puede eliminar una marca que tiene productos asociados');
+    }
   }
 }
