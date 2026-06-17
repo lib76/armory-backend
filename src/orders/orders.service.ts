@@ -180,12 +180,12 @@ export class OrdersService {
       .where('order.status = :status', { status: 'paid' });
 
     if (from) {
-      qb.andWhere('order.paid_at >= :from', { from: new Date(from) });
+      qb.andWhere('COALESCE(order.paidAt, order.createdAt) >= :from', { from: new Date(from) });
     }
     if (to) {
       const toDate = new Date(to);
       toDate.setHours(23, 59, 59, 999);
-      qb.andWhere('order.paid_at <= :to', { to: toDate });
+      qb.andWhere('COALESCE(order.paidAt, order.createdAt) <= :to', { to: toDate });
     }
 
     const orders = await qb.getMany();

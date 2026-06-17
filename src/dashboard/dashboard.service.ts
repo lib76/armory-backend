@@ -2,8 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 
 export interface PendingOrdersSummary {
-  count: number;
-  total: number;
+  countARS: number;
+  totalARS: number;
+  countUSD: number;
+  totalUSD: number;
 }
 
 export interface TopProduct {
@@ -23,12 +25,23 @@ export class DashboardService {
   constructor(private readonly dataSource: DataSource) {}
 
   async getPendingOrders(): Promise<PendingOrdersSummary> {
-    const rows = await this.dataSource.query<Array<{ count: string; total: string }>>(`
-      SELECT COUNT(*)::int AS count, COALESCE(SUM(total), 0)::float AS total
+    const rows = await this.dataSource.query<
+      Array<{ countARS: string; totalARS: string; countUSD: string; totalUSD: string }>
+    >(`
+      SELECT
+        COUNT(*) FILTER (WHERE currency = 'ARS')::int             AS "countARS",
+        COALESCE(SUM(total) FILTER (WHERE currency = 'ARS'), 0)::float AS "totalARS",
+        COUNT(*) FILTER (WHERE currency = 'USD')::int             AS "countUSD",
+        COALESCE(SUM(total) FILTER (WHERE currency = 'USD'), 0)::float AS "totalUSD"
       FROM orders
       WHERE status NOT IN ('paid', 'cancelled')
     `);
-    return { count: Number(rows[0].count), total: Number(rows[0].total) };
+    return {
+      countARS: Number(rows[0].countARS),
+      totalARS: Number(rows[0].totalARS),
+      countUSD: Number(rows[0].countUSD),
+      totalUSD: Number(rows[0].totalUSD),
+    };
   }
 
   async getTopProducts(month: string): Promise<TopProduct[]> {
@@ -38,14 +51,19 @@ export class DashboardService {
     const to   = new Date(year, m, 0, 23, 59, 59, 999);
     return this.dataSource.query<TopProduct[]>(`
       SELECT
-        oi.product_name                        AS name,
-        SUM(oi.unit_price * oi.quantity)::float AS revenue,
-        SUM(oi.quantity)::int                  AS quantity
+        oi.product_name AS name,
+        SUM(
+          CASE WHEN o.currency = 'USD' AND o.exchange_rate IS NOT NULL
+               THEN oi.unit_price * oi.quantity * o.exchange_rate
+               ELSE oi.unit_price * oi.quantity
+          END
+        )::float AS revenue,
+        SUM(oi.quantity)::int AS quantity
       FROM order_items oi
       JOIN orders o ON oi.order_id = o.id
       WHERE o.status = 'paid'
-        AND o.paid_at >= $1
-        AND o.paid_at <= $2
+        AND COALESCE(o.paid_at, o.created_at) >= $1
+        AND COALESCE(o.paid_at, o.created_at) <= $2
       GROUP BY oi.product_name
       ORDER BY revenue DESC
       LIMIT 5
@@ -69,12 +87,12 @@ export class DashboardService {
     const [orderRows, incomeRows, fixedRows, manualExpRows] = await Promise.all([
       this.dataSource.query<Array<{ month: string; revenue: string }>>(`
         SELECT
-          TO_CHAR(paid_at AT TIME ZONE 'America/Argentina/Buenos_Aires', 'YYYY-MM') AS month,
+          TO_CHAR(COALESCE(paid_at, created_at) AT TIME ZONE 'America/Argentina/Buenos_Aires', 'YYYY-MM') AS month,
           SUM(CASE WHEN currency = 'USD' AND exchange_rate IS NOT NULL
                    THEN total * exchange_rate ELSE total END)::float AS revenue
         FROM orders
         WHERE status = 'paid'
-          AND TO_CHAR(paid_at AT TIME ZONE 'America/Argentina/Buenos_Aires', 'YYYY-MM') BETWEEN $1 AND $2
+          AND TO_CHAR(COALESCE(paid_at, created_at) AT TIME ZONE 'America/Argentina/Buenos_Aires', 'YYYY-MM') BETWEEN $1 AND $2
         GROUP BY 1
       `, [fromMonth, toMonth]),
 
