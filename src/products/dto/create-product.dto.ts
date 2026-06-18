@@ -51,4 +51,13 @@ export class CreateProductDto {
   @IsOptional()
   @IsBoolean()
   isFeatured?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isOnSale?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  discountPrice?: number | null;
 }

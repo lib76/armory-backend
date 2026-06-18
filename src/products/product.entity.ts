@@ -58,6 +58,12 @@ export class Product {
   @Column({ name: 'is_featured', default: false })
   isFeatured: boolean;
 
+  @Column({ name: 'is_on_sale', default: false })
+  isOnSale: boolean;
+
+  @Column({ name: 'discount_price', type: 'numeric', precision: 10, scale: 2, nullable: true, default: null })
+  discountPrice: number | null;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
