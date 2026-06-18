@@ -46,9 +46,6 @@ export class DashboardService {
 
   async getTopProducts(month: string): Promise<TopProduct[]> {
     if (!month || !/^\d{4}-\d{2}$/.test(month)) return [];
-    const [year, m] = month.split('-').map(Number);
-    const from = new Date(year, m - 1, 1);
-    const to   = new Date(year, m, 0, 23, 59, 59, 999);
     return this.dataSource.query<TopProduct[]>(`
       SELECT
         oi.product_name AS name,
@@ -62,12 +59,14 @@ export class DashboardService {
       FROM order_items oi
       JOIN orders o ON oi.order_id = o.id
       WHERE o.status = 'paid'
-        AND COALESCE(o.paid_at, o.created_at) >= $1
-        AND COALESCE(o.paid_at, o.created_at) <= $2
+        AND TO_CHAR(
+              COALESCE(o.paid_at, o.created_at) AT TIME ZONE 'America/Argentina/Buenos_Aires',
+              'YYYY-MM'
+            ) = $1
       GROUP BY oi.product_name
       ORDER BY revenue DESC
       LIMIT 5
-    `, [from, to]);
+    `, [month]);
   }
 
   async getEvolution(upToMonth: string, months = 6): Promise<EvolutionEntry[]> {
