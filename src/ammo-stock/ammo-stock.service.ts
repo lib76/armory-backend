@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AmmoCaliberStock } from './ammo-caliber-stock.entity';
 import { AmmoStockHistory, type StockChangeReason } from './ammo-stock-history.entity';
 import type { UpsertAmmoStockDto } from './dto/upsert-ammo-stock.dto';
+import type { RestockAmmoStockDto } from './dto/restock-ammo-stock.dto';
 import type { User } from '../users/user.entity';
 
 export interface HistoryRecordInput {
@@ -15,6 +16,7 @@ export interface HistoryRecordInput {
   customerId?: string | null;
   customerName?: string | null;
   ammoSaleId?: string | null;
+  brand?: string | null;
   notes?: string | null;
 }
 
@@ -70,6 +72,30 @@ export class AmmoStockService {
     return record;
   }
 
+  async restock(dto: RestockAmmoStockDto, admin: Pick<User, 'id' | 'firstName' | 'lastName'> | null): Promise<AmmoCaliberStock> {
+    const existing = await this.repo.findOne({ where: { caliber: dto.caliber } });
+    if (!existing) {
+      throw new NotFoundException(
+        `No hay stock configurado para el calibre "${dto.caliber}". Crealo primero con un Ajuste de stock.`,
+      );
+    }
+    const quantityBefore = existing.quantity;
+    existing.quantity += dto.quantity;
+    const record = await this.repo.save(existing);
+
+    await this.createHistoryRecord({
+      caliber: dto.caliber,
+      quantityBefore,
+      quantityAfter: record.quantity,
+      reason: 'restock',
+      admin,
+      brand: dto.brand ?? null,
+      notes: dto.notes ?? null,
+    });
+
+    return record;
+  }
+
   async createHistoryRecord(input: HistoryRecordInput): Promise<void> {
     const entry = this.historyRepo.create({
       caliber: input.caliber,
@@ -83,6 +109,7 @@ export class AmmoStockService {
       customerId: input.customerId ?? null,
       customerName: input.customerName ?? null,
       ammoSaleId: input.ammoSaleId ?? null,
+      brand: input.brand ?? null,
       notes: input.notes ?? null,
     });
     await this.historyRepo.save(entry);

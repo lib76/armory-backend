@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Req, UseGuards } from '@nestjs/common';
 import { AmmoStockService } from './ammo-stock.service';
 import { UpsertAmmoStockDto } from './dto/upsert-ammo-stock.dto';
+import { RestockAmmoStockDto } from './dto/restock-ammo-stock.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import type { User } from '../users/user.entity';
 
@@ -27,5 +28,10 @@ export class AmmoStockController {
   @Post()
   upsert(@Body() dto: UpsertAmmoStockDto, @Req() req: { user: User }) {
     return this.ammoStockService.upsert(dto, req.user);
+  }
+
+  @Post('restock')
+  restock(@Body() dto: RestockAmmoStockDto, @Req() req: { user: User }) {
+    return this.ammoStockService.restock(dto, req.user);
   }
 }

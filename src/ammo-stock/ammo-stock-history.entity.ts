@@ -4,7 +4,8 @@ export type StockChangeReason =
   | 'manual_adjustment'
   | 'sale'
   | 'internal_consumption'
-  | 'sale_reversal';
+  | 'sale_reversal'
+  | 'restock';
 
 @Entity('ammo_stock_history')
 export class AmmoStockHistory {
@@ -37,6 +38,9 @@ export class AmmoStockHistory {
 
   @Column({ name: 'ammo_sale_id', type: 'uuid', nullable: true })
   ammoSaleId: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  brand: string | null;
 
   @Column({ type: 'text', nullable: true })
   notes: string | null;

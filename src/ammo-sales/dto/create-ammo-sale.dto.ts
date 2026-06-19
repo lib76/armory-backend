@@ -23,4 +23,8 @@ export class CreateAmmoSaleDto {
   @IsOptional()
   @IsBoolean()
   isInternalConsumption?: boolean;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }

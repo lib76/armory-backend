@@ -79,6 +79,8 @@ export class AmmoSalesService {
       customerId: full?.customer?.id ?? null,
       customerName,
       ammoSaleId: sale.id,
+      brand: dto.brand,
+      notes: dto.notes ?? null,
     });
 
     return sale;
