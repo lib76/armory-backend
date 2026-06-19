@@ -66,6 +66,7 @@ export class AmmoStockService {
       quantityAfter: dto.quantity,
       reason: 'manual_adjustment',
       admin,
+      brand: dto.brand ?? null,
       notes: dto.notes ?? null,
     });
 
