@@ -1,5 +1,6 @@
 import { IsString, IsNumber, IsOptional, Min, IsUUID, IsBoolean, ValidateIf, IsIn, IsArray } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { CALIBERS } from '@/ammo-stock/calibers.constant';
 
 export class CreateProductDto {
   @IsString()
@@ -41,7 +42,8 @@ export class CreateProductDto {
   condition?: 'nuevo' | 'usado' | null;
 
   @IsOptional()
-  @IsString()
+  @ValidateIf((o: { caliber?: string | null }) => o.caliber !== null && o.caliber !== undefined)
+  @IsIn(CALIBERS)
   caliber?: string | null;
 
   @IsOptional()
