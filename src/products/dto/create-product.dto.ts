@@ -42,6 +42,7 @@ export class CreateProductDto {
   condition?: 'nuevo' | 'usado' | null;
 
   @IsOptional()
+  @Transform(({ value }: { value: unknown }) => (value === '' ? null : value))
   @ValidateIf((o: { caliber?: string | null }) => o.caliber !== null && o.caliber !== undefined)
   @IsIn(CALIBERS)
   caliber?: string | null;
