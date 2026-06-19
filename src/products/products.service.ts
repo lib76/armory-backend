@@ -48,6 +48,7 @@ export class ProductsService {
       currency: dto.currency ?? 'ARS',
       condition: dto.condition ?? null,
       caliber: dto.caliber ?? null,
+      roundsPerUnit: dto.roundsPerUnit ?? null,
       isActive: dto.isActive ?? true,
       category: { id: dto.categoryId },
       brand: dto.brandId ? ({ id: dto.brandId } as Brand) : null,

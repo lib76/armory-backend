@@ -22,6 +22,10 @@ export class CreateCategoryDto {
   isFreeSale?: boolean;
 
   @IsOptional()
+  @IsBoolean()
+  isMunicion?: boolean;
+
+  @IsOptional()
   @IsInt()
   featuredOrder?: number | null;
 

@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsOptional, Min, IsUUID, IsBoolean, ValidateIf, IsIn, IsArray } from 'class-validator';
+import { IsString, IsNumber, IsOptional, Min, IsUUID, IsBoolean, ValidateIf, IsIn, IsArray, IsInt } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { CALIBERS } from '@/ammo-stock/calibers.constant';
 
@@ -63,4 +63,10 @@ export class CreateProductDto {
   @IsNumber()
   @Min(0)
   discountPrice?: number | null;
+
+  @IsOptional()
+  @ValidateIf((o: { roundsPerUnit?: number | null }) => o.roundsPerUnit !== null && o.roundsPerUnit !== undefined)
+  @IsInt()
+  @Min(1)
+  roundsPerUnit?: number | null;
 }

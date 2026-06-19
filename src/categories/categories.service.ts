@@ -9,7 +9,7 @@ const DEFAULT_CATEGORIES = [
   { name: 'Pistolas',     slug: 'pistolas',     isFirearm: true,  isFeatured: true,  featuredOrder: 0    },
   { name: 'Rifles',       slug: 'rifles',       isFirearm: true,  isFeatured: true,  featuredOrder: 1    },
   { name: 'Escopetas',    slug: 'escopetas',    isFirearm: true,  isFeatured: true,  featuredOrder: 2    },
-  { name: 'Munición',     slug: 'municion',     isFirearm: false, isFeatured: true,  featuredOrder: 3    },
+  { name: 'Munición',     slug: 'municion',     isFirearm: false, isFeatured: true,  featuredOrder: 3,   isMunicion: true  },
   { name: 'Accesorios',   slug: 'accesorios',   isFirearm: false, isFeatured: true,  featuredOrder: 4    },
   { name: 'Indumentaria', slug: 'indumentaria', isFirearm: false, isFeatured: false, featuredOrder: null },
   { name: 'Airsoft',      slug: 'airsoft',      isFirearm: false, isFeatured: false, featuredOrder: null },
@@ -42,10 +42,12 @@ export class CategoriesService implements OnModuleInit {
       const exists = await this.repo.findOne({ where: { slug: cat.slug } });
       if (!exists) continue;
 
+      const catWithMunicion = cat as typeof cat & { isMunicion?: boolean };
       const needsPatch =
         exists.isFirearm !== cat.isFirearm ||
         exists.isFeatured !== cat.isFeatured ||
-        (exists.featuredOrder === null && cat.featuredOrder !== null);
+        (exists.featuredOrder === null && cat.featuredOrder !== null) ||
+        (catWithMunicion.isMunicion === true && !exists.isMunicion);
 
       if (needsPatch) {
         await this.repo.save({
@@ -53,6 +55,7 @@ export class CategoriesService implements OnModuleInit {
           isFirearm: cat.isFirearm,
           isFeatured: cat.isFeatured,
           ...(exists.featuredOrder === null ? { featuredOrder: cat.featuredOrder } : {}),
+          ...(catWithMunicion.isMunicion === true ? { isMunicion: true } : {}),
         });
       }
     }

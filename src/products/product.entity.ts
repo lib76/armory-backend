@@ -49,6 +49,9 @@ export class Product {
   @Column({ type: 'varchar', length: 50, nullable: true, default: null })
   caliber: string | null;
 
+  @Column({ name: 'rounds_per_unit', type: 'int', nullable: true, default: null })
+  roundsPerUnit: number | null;
+
   @OneToMany(() => ProductImage, (img) => img.product, { eager: true, cascade: true })
   images: ProductImage[];
 
