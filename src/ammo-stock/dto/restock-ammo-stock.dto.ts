@@ -1,8 +1,8 @@
-import { IsString, IsInt, IsOptional, Min, MinLength } from 'class-validator';
+import { IsString, IsInt, IsOptional, IsIn, Min } from 'class-validator';
+import { CALIBERS } from '../calibers.constant';
 
 export class RestockAmmoStockDto {
-  @IsString()
-  @MinLength(1)
+  @IsIn(CALIBERS)
   caliber: string;
 
   @IsInt()
